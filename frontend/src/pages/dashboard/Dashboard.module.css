@@ -1,0 +1,71 @@
+.pageLayout {
+  display: grid;
+  grid-template-areas: 'pageHeading' 'pageContent';
+  grid-template-rows: min-content 1fr;
+  grid-template-columns: 1fr;
+  height: 100%;
+  overflow: hidden;
+}
+
+.content {
+  grid-area: pageContent;
+  display: grid;
+  grid-template-areas:
+    'header header'
+    'nav article'
+    'footer footer';
+  grid-template-rows: 50px minmax(0, 1fr) 50px;
+  grid-template-columns: minmax(200px, 300px) 1fr;
+  gap: 10px;
+  height: 100%;
+  padding: 10px;
+  overflow: hidden;
+}
+
+section {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+
+  padding: 10px;
+  border-radius: 5px;
+}
+
+
+
+.content {
+  grid-area: pageContent;
+}
+.pageHeader {
+  grid-area: pageHeading;
+}
+
+.header {
+  grid-area: header;
+  
+}
+
+.footer {
+  grid-area: footer;
+  padding-bottom: 10px;
+}
+
+.article {
+  grid-area: article;
+}
+.nav {
+  grid-area: nav;
+  overflow: hidden;
+}
+
+/* Stack the layout on small devices/viewports. */
+@media all and (max-width: 575px) {
+  .content {
+    grid-template-areas:
+      'header'
+      'article'
+      'nav'
+      'footer';
+    grid-template-rows: 50px 1fr 1.5fr 70px;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}

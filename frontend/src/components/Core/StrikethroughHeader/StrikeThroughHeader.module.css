@@ -1,0 +1,26 @@
+.title_lines {
+  position: relative;
+  margin-bottom: 20px;
+  z-index: 1;
+  overflow: hidden;
+  text-align: center;
+
+  font-family: arial;
+}
+
+.title_lines:before,
+.title_lines:after {
+  position: absolute;
+  top: 51%;
+  overflow: hidden;
+  width: 48%;
+  height: 1px;
+  content: '\a0';
+  background-color: #cccccc;
+  margin-left: 2%;
+}
+
+.title_lines:before {
+  margin-left: -50%;
+  text-align: right;
+}
