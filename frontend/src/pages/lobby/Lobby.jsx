@@ -1,76 +1,57 @@
 import { React, useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const data = 'pinging all day long'
-
 function Lobby({ socket }) {
+  const navigate = useNavigate()
   const [lastPong, setLastPong] = useState(null)
-  const [InputPlayerName, setInputPlayerName] = useState(null)
-  const [InputlobbyName, setInputlobbyName] = useState(null)
+  const [IsConnected, setIsConnected] = useState(null)
+  
+  const regex = /\b[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b/
+  const roomId = window.location.pathname.match(regex)[0]
+  
+  
+  socket.on('pong', () => {
+    setLastPong(new Date().toISOString())
+  })
+  
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log(`✅ Connected to ws: ${socket.id}`)
-    })
-
-    socket.on('disconnect', () => {
-      console.log(`🔥 Disconnected from ws`)
-    })
-
-    socket.on('pong', () => {
-      setLastPong(new Date().toISOString())
-    })
-
-    return () => {
-      socket.off('connect')
-      socket.off('disconnect')
-      socket.off('pong')
-      socket.close()
-    }
-  }, [socket])
-
+    setIsConnected(socket.connected)
+  }, [socket.connected])
+  
   const sendPing = () => {
     socket.emit('ping', data)
   }
+  const onDisconnect= () => {
 
-  const connect = () => {
-    socket.connect()
+      socket.emit('lobbyDisconnect', {roomId: roomId}, (response) => {
+        if (!response.success) {
+          toast.error(response.message)
+          
+        }
+      })
+      navigate('/play')
 
-    const playerData = { username: InputPlayerName }
-    socket.emit('createPlayer', playerData)
-  }
-
-  const connectLobby = () => {
-    const connectionData = { roomId: InputlobbyName }
-    socket.emit('lobbyConnect', connectionData)
-  }
-
-  const disconnect = () => {
-    socket.close()
-  }
-
-  const disconnectLobby = () => {
-    const disconnectionData = { roomId: InputlobbyName }
-    socket.emit('lobbyDisconnect', disconnectionData)
   }
 
   return (
     <>
       <div>
-        <p>Connected: {'' + socket.connected}</p>
+        <p>Connected: {IsConnected || '-'}</p>
         <p>Last pong: {lastPong || '-'}</p>
-        <input
-          name='InputPlayerName'
-          onChange={(e) => setInputPlayerName(e.target.value)}
-        />
-        <button onClick={connect}>Connect</button>
-        <button onClick={disconnect}>disconnect</button>
-        <button onClick={sendPing}>Send ping</button>
-        <br />
-        <input
-          name='InputlobbyName'
-          onChange={(e) => setInputlobbyName(e.target.value)}
-        />
-        <button onClick={connectLobby}>Connect to lobby</button>
-        <button onClick={disconnectLobby}>Connect to lobby</button>
+        <button
+          className='btn'
+          onClick={sendPing}
+        >
+          Send Ping
+        </button>
+        <button
+          className='btn'
+          onClick={onDisconnect}
+        >
+          Disconnect
+        </button>
       </div>
     </>
   )
