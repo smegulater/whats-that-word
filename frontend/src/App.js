@@ -64,12 +64,11 @@ function App() {
                 path='/play'
                 element={<Play socket={socket} />}
               />
-              <Route path='/lobby/:roomId' element={<Lobby socket={socket} />}/>
-                
+              <Route
+                path='/lobby/:roomId'
+                element={<Lobby socket={socket} />}
+              />
             </Routes>
-          </div>
-          <div className={styles.footer}>
-            <p>footer</p>
           </div>
         </div>
       </Router>

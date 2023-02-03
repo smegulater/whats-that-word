@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { FaSignInAlt, FaSignOutAlt, FaUser } from 'react-icons/fa'
+import { FaSignInAlt, FaSignOutAlt, FaUser, FaPlay } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout, reset } from '../../features/auth/authSlice'
-import styles  from "./Header.module.css"
+import styles from './Header.module.css'
 
 function Header() {
   const navigate = useNavigate()
@@ -19,34 +19,50 @@ function Header() {
   }
 
   return (
-    <header className={styles.header}>
-      <div className={styles.logo}>{user ? <Link to='/dashboard'>🤔 Whats that word</Link> : <Link to='/'><span>🤔 Whats that word</span></Link>}</div>
-      <ul>
-        {user ? (
+    <>
+      <header className={styles.header}>
+        <div className={styles.logo}>
+          {user ? (
+            <Link to='/dashboard'>🤔 Whats that word</Link>
+          ) : (
+            <Link to='/'>
+              <span>🤔 Whats that word</span>
+            </Link>
+          )}
+        </div>
+        <ul>
           <li>
-            <button
-              className='btn'
-              onClick={Logout}
-            >
-              <FaSignOutAlt /> Logout
-            </button>
+            <Link to='/play'>
+              <FaPlay /> Play
+            </Link>
           </li>
-        ) : (
-          <>
+
+          {user ? (
             <li>
-              <Link to='/login'>
-                <FaSignInAlt /> Login
-              </Link>
+              <button
+                className='btn'
+                onClick={Logout}
+              >
+                <FaSignOutAlt /> Logout
+              </button>
             </li>
-            <li>
-              <Link to='/register'>
-                <FaUser /> Register
-              </Link>
-            </li>
-          </>
-        )}
-      </ul>
-    </header>
+          ) : (
+            <>
+              <li>
+                <Link to='/login'>
+                  <FaSignInAlt /> Login
+                </Link>
+              </li>
+              <li>
+                <Link to='/register'>
+                  <FaUser /> Register
+                </Link>
+              </li>
+            </>
+          )}
+        </ul>
+      </header>
+    </>
   )
 }
 
