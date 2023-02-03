@@ -53,6 +53,11 @@ h3 {
   border-radius: 5px;
   margin-bottom: 10px;
   font-family: inherit;
+  text-align: center;
+}
+
+.input-center input{
+  text-align: center;
 }
 
 .form-group label {

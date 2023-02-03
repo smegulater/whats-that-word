@@ -38,30 +38,40 @@ export default function InitSocketServer(httpServer) {
       socket.emit('pong')
     })
 
-    socket.on('createPlayer', (data) => {
+    socket.on('createPlayer', (data, callback) => {
       const map = new Map(Object.entries(data))
 
-      if (!map.has('username')) {
-        console.log('🚨 malformed create Character request receieved')
+      if (!map.has('username') || !map.has('colour')) {
+        const msg = '🚨 malformed create Character request receieved'
+        console.log(msg)
+        callback({ success: false, message: msg })
         return
       }
 
       socket.data.username = map.get('username')
-      console.log(`🟢 player creation successfull id:${socket.id} username:${socket.data.username}`.green)
+      socket.data.colour = map.get('colour')
+
+      const msg = `🟢 player creation successfull id:${socket.id} username:${socket.data.username} colour:${socket.data.colour}`
+      console.log(msg.green)
+      callback({ success: true, message: msg })
     })
 
-    socket.on('lobbyConnect', (data) => {
+    socket.on('lobbyConnect', (data, callback) => {
       const map = new Map(Object.entries(data))
 
       if (!map.has('roomId')) {
-        console.log('🚨 malformed lobby connect request receieved'.red)
+        const msg = '🚨 malformed lobby connect request receieved'
+        console.log(msg.red)
+        callback({ success: false, message: msg })
         return
       }
 
       const roomName = 'Lobby_' + map.get('roomId')
 
       if (!socket.data.username) {
-        console.log('🚨 Cannot connect to lobby without a Player defined'.red)
+        const msg = '🚨 Cannot connect to lobby without a Player defined'
+        console.log(msg.red)
+        callback({ success: false, message: msg })
         return
       }
 
@@ -70,35 +80,43 @@ export default function InitSocketServer(httpServer) {
         // first connector is owner
 
         socket.join('Lobby_' + map.get('roomId'))
-        console.log(
-          `✅ Successfull lobby connection event id: ${socket.id} username: ${socket.data.username} as Host`.brightGreen
-        )
+
+        const msg = `✅ Successfull lobby connection event id: ${socket.id} username: ${socket.data.username} as Host`
+        console.log(msg.brightGreen)
+        callback({ success: true, message: msg })
       } else {
         socket.join('Lobby_' + map.get('roomId'))
-        console.log(
-          `✅ Successfull lobby connection event id: ${socket.id} username: ${socket.data.username} as Guest`
-            .brightGreen
-        )
+
+        const msg = `✅ Successfull lobby connection event id: ${socket.id} username: ${socket.data.username} as Guest`
+        console.log(msg.brightGreen)
+        callback({ success: true, message: msg })
       }
     })
 
-    socket.on('lobbyDisconnect', (data) => {
+    socket.on('lobbyDisconnect', (data, callback) => {
       const map = new Map(Object.entries(data))
 
       if (!map.has('roomId')) {
-        console.log('🚨 Malformed lobby leave request receieved'.red)
+        const msg = '🚨 Malformed lobby leave request receieved'
+        console.log(msg.red)
+        callback({ success: false, message: msg })
         return
       }
 
       const roomName = 'Lobby_' + map.get('roomId')
 
       if (!socket.rooms.has(roomName)) {
-        console.log(`🚨 id:${socket.id} reqested to leave a lobby it was not part of`.red)
+        const msg = `🚨 id:${socket.id} reqested to leave a lobby it was not part of`
+        console.log(msg.red)
+        callback({ success: false, message: msg })
         return
       }
 
       socket.leave('Lobby_' + map.get('roomId'))
-      console.log(`🚪 id:${socket.id} username:${socket.data.username} left lobby:${map.get('roomId')}`.yellow)
+
+      const msg = `🚪 id:${socket.id} username:${socket.data.username} left lobby:${map.get('roomId')}`
+      console.log(msg.yellow)
+      callback({ success: true, message: msg })
     })
 
     socket.on('disconnecting', (reason) => {

@@ -1,0 +1,62 @@
+.flex-container {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-justify-content: space-around;
+  -ms-flex-pack: distribute;
+  justify-content: center;
+  -webkit-align-content: space-around;
+  -ms-flex-line-pack: distribute;
+  align-content: space-around;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+.flexContainer {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-content: center;
+  align-items: stretch;
+
+  height: 100%;
+  max-width: 50rem;
+
+  
+  margin: auto;
+}
+.flexItem {
+    margin: 2rem;
+}
+.colorPicker {
+  margin: auto;
+}
+
+form{
+height:100%
+}
+
+
+@media (max-width: 600px) {
+    .flexContainer {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-content: center;
+        align-items: stretch;
+      
+        height: 100%;
+        max-width: 30rem;
+      
+        
+        margin: 10px;
+      }
+  }
