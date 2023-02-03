@@ -1,16 +1,18 @@
+import { timestamp } from 'rxjs'
 import { Server } from 'socket.io'
 
 const ALL = /\/nsp-\w+/
+const LOBBYPREFIX = 'Lobby_'
 
 export default function InitSocketServer(httpServer) {
   const io = new Server(httpServer)
   const mainAdapter = io.of('/').adapter
 
   mainAdapter.on('create-room', (room) => {
-    if (room.startsWith('Lobby_')) console.log(`🆕 lobby with name:${room} created`.green)
+    if (room.startsWith(LOBBYPREFIX)) console.log(`🆕 lobby with name:${room} created`.green)
   })
   mainAdapter.on('delete-room', (room) => {
-    if (room.startsWith('Lobby_')) console.log(`🧺 lobby with name:${room} deleted`.grey)
+    if (room.startsWith(LOBBYPREFIX)) console.log(`🧺 lobby with name:${room} deleted`.grey)
   })
   mainAdapter.on('join-room', (room, id) => {
     if (id != room) console.log(`➕ id:${id} joined lobby: ${room}`.brightGreen)
@@ -66,7 +68,7 @@ export default function InitSocketServer(httpServer) {
         return
       }
 
-      const roomName = 'Lobby_' + map.get('roomId')
+      const roomName = LOBBYPREFIX + map.get('roomId')
 
       if (!socket.data.username) {
         const msg = '🚨 Cannot connect to lobby without a Player defined'
@@ -79,13 +81,13 @@ export default function InitSocketServer(httpServer) {
         // first lobby connection - spinup game service
         // first connector is owner
 
-        socket.join('Lobby_' + map.get('roomId'))
+        socket.join(LOBBYPREFIX + map.get('roomId'))
 
         const msg = `✅ Successfull lobby connection event id: ${socket.id} username: ${socket.data.username} as Host`
         console.log(msg.brightGreen)
         callback({ success: true, message: msg })
       } else {
-        socket.join('Lobby_' + map.get('roomId'))
+        socket.join(LOBBYPREFIX + map.get('roomId'))
 
         const msg = `✅ Successfull lobby connection event id: ${socket.id} username: ${socket.data.username} as Guest`
         console.log(msg.brightGreen)
@@ -103,7 +105,7 @@ export default function InitSocketServer(httpServer) {
         return
       }
 
-      const roomName = 'Lobby_' + map.get('roomId')
+      const roomName = LOBBYPREFIX + map.get('roomId')
 
       if (!socket.rooms.has(roomName)) {
         const msg = `🚨 id:${socket.id} reqested to leave a lobby it was not part of`
@@ -112,7 +114,7 @@ export default function InitSocketServer(httpServer) {
         return
       }
 
-      socket.leave('Lobby_' + map.get('roomId'))
+      socket.leave(LOBBYPREFIX + map.get('roomId'))
 
       const msg = `🚪 id:${socket.id} username:${socket.data.username} left lobby:${map.get('roomId')}`
       console.log(msg.yellow)
@@ -124,6 +126,34 @@ export default function InitSocketServer(httpServer) {
         console.log(`⛔ id:${socket.id} username:${socket.data.username} will be disconnected: ${reason}`.grey)
       } else {
         console.log(`⛔ id:${socket.id} username:${socket.data.username} will be disconnected: ${reason}`.grey)
+      }
+    })
+
+    socket.on('chatMessage', (data, callback) => {
+      const map = new Map(Object.entries(data))
+
+      if (!map.has('roomId') || !socket.data.username || !map.has('message') || !map.has('timestamp')) {
+        const msg = '🚨 malformed chat message request receieved'
+        console.log(msg.red)
+        callback({ success: false, message: msg })
+        return
+      }
+      
+      const roomName = LOBBYPREFIX + map.get('roomId')
+      
+      try{
+          if(map.has('team')){
+            const msg = {username: socket.data.username, colour: map.get('timestamp'),message:map.get('message'), timestamp: map.get(timestamp)}
+            io.in(`${roomName}_${map.get('team')}`).emit('chatMessage' , msg)
+          }else{
+            const msg = {username: socket.data.username, colour: map.get('timestamp'),message:map.get('message'), timestamp: map.get(timestamp)}
+            io.in(`${roomName}`).emit('chatMessage' , msg)
+          }
+          
+          callback({ success: true})
+      } catch (error){
+          console.log(error.red)
+          callback({ success: false})
       }
     })
   })
