@@ -26,17 +26,17 @@ function Header() {
             <Link to='/dashboard'>🤔 Whats that word</Link>
           ) : (
             <Link to='/'>
-              <span>🤔 Whats that word</span>
+              🤔 Whats that word
             </Link>
           )}
         </div>
+
         <ul>
           <li>
             <Link to='/play'>
               <FaPlay /> Play
             </Link>
           </li>
-
           {user ? (
             <li>
               <button

@@ -6,22 +6,18 @@
   border-bottom: 1px solid #e6e6e6;
 
 }
-
 .header .logo {
   margin-left: 30px;
 }
-
 .header .logo a {
   color: aliceblue;
 }
-
 .header ul {
   margin-right: 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-
 .header ul li {
   margin-left: 20px;
 }
@@ -38,4 +34,49 @@
 
 .header ul li a svg {
   margin-right: 5px;
+}
+
+
+@media (max-width: 400px) {
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #e6e6e6;
+  
+  }
+  
+  .header .logo {
+    margin-left: 30px;
+  }
+  
+  .header .logo a {
+    color: aliceblue;
+  }
+  
+  .header ul {
+    margin-right: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .header ul li {
+    margin-left: 20px;
+  }
+  
+  .header ul li a {
+    color: aliceblue;
+    display: flex;
+    align-items: center;
+  }
+  
+  .header ul li a:hover {
+    color: #777;
+  }
+  
+  .header ul li a svg {
+    margin-right: 5px;
+  }
 }
