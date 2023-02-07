@@ -1,0 +1,41 @@
+.container {
+  display: grid;
+  grid-template-rows: 1fr minmax(1rem, 100px);
+  grid-template-areas:
+    'chatMessages'
+    'chatInput';
+  overflow: auto;
+  height: 100%;
+}
+.chatMessageContainer {
+  grid-area: chatMessages;
+  background-color: rgb(29, 66, 99);
+  padding: 0.5em;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  min-height: min-content;
+  overflow: auto;
+}
+.chatMessageContainer > * {
+  margin-bottom: 0.5em;
+}
+.chatInput {
+  grid-area: chatInput;
+  background-color: rgb(33, 51, 66);
+}
+
+
+
+@media (max-width: 600px) {
+  .container {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-areas:
+      'chatMessages'
+      'chatInput';
+    height: 100%;
+    overflow: hidden;
+  }
+}

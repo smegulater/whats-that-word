@@ -1,0 +1,21 @@
+.messageContainer{
+
+padding: 0 0.5em 0.5em 0.5em;
+background-color: cadetblue;
+border-color: black;
+border-radius: 0.25em;
+color: white;
+}
+
+.timestamp{
+  font-weight: bold;
+  font-size: x-small;
+
+  justify-self: baseline;
+}
+
+.sender{
+    font-weight: bold;
+    font-size: large;
+
+  }

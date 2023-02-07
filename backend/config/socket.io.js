@@ -114,7 +114,7 @@ export default function InitSocketServer(httpServer) {
         return
       }
 
-      socket.leave(LOBBYPREFIX + map.get('roomId'))
+      socket.leave(roomName)
 
       const msg = `🚪 id:${socket.id} username:${socket.data.username} left lobby:${map.get('roomId')}`
       console.log(msg.yellow)
@@ -138,22 +138,34 @@ export default function InitSocketServer(httpServer) {
         callback({ success: false, message: msg })
         return
       }
-      
+
       const roomName = LOBBYPREFIX + map.get('roomId')
-      
-      try{
-          if(map.has('team')){
-            const msg = {username: socket.data.username, colour: map.get('timestamp'),message:map.get('message'), timestamp: map.get(timestamp)}
-            io.in(`${roomName}_${map.get('team')}`).emit('chatMessage' , msg)
-          }else{
-            const msg = {username: socket.data.username, colour: map.get('timestamp'),message:map.get('message'), timestamp: map.get(timestamp)}
-            io.in(`${roomName}`).emit('chatMessage' , msg)
+      console.log(`📥 new message received from:${socket.id} emitting to: ${roomName}`)
+      try {
+        if (map.has('team')) {
+          const msg = {
+            username: socket.data.username,
+            colour: socket.data.colour,
+            message: map.get('message'),
+            timestamp: map.get('timestamp'),
           }
-          
-          callback({ success: true})
-      } catch (error){
-          console.log(error.red)
-          callback({ success: false})
+          io.in(`${roomName}_${map.get('team')}`).emit('chatMessage', msg)
+          console.log(`📤 emitted message to team in ${roomName}`)
+        } else {
+          const msg = {
+            username: socket.data.username,
+            colour: socket.data.colour,
+            message: map.get('message'),
+            timestamp: map.get('timestamp'),
+          }
+          io.in(`${roomName}`).emit('chatMessage', msg)
+          console.log(`📤 emitted message to ${roomName}`)
+        }
+
+        callback({ success: true })
+      } catch (error) {
+        console.log(error.red)
+        callback({ success: false })
       }
     })
   })

@@ -4,9 +4,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 
-import CharacterCreator from '../../components/Forms/CharacterCreator/CharacterCreator'
-import LobbyCreator from '../../components/Forms/LobbyCreator/LobbyCreator'
-
 import StrikeThroughHeader from '../../components/Core/StrikethroughHeader/StrikeThroughHeader'
 import styles from './Play.module.css'
 
@@ -14,7 +11,7 @@ const regex = /\b[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b/
 
 function Play({ socket }) {
   const [FormData, setFormData] = useState({ username: '', colour: '#000000' })
-  const [InputRoomId, setInputRoomId] = useState({ roomId: '' })
+  const [InputRoomId, setInputRoomId] = useState('')
 
   const { username, colour } = FormData
   const navigate = useNavigate()
@@ -31,18 +28,10 @@ function Play({ socket }) {
       colour: event,
     }))
   }
-  const onSubmit = (event) => {
-    try {
-      onCreateLobby()
-    } catch (err) {
-      toast.error(err)
-    }
 
+  const onCreateLobby = (event) => {
     event.preventDefault()
-  }
-
-  const onCreateLobby = async () => {
-    await socket.connect()
+    socket.connect()
     socket.emit('createPlayer', FormData, (response) => {
       if (!response.success) {
         toast.error(response.message)
@@ -62,23 +51,32 @@ function Play({ socket }) {
       navigate(`/lobby/${newId}`)
     })
   }
-
-  const disconnectLobby = async () => {
-    socket.emit('lobbyDisconnect', InputRoomId, (response) => {
+  const onJoinLobby = (event) => {
+    event.preventDefault()
+    socket.connect()
+    socket.emit('createPlayer', FormData, (response) => {
       if (!response.success) {
         toast.error(response.message)
+        return
+      } else {
+        toast.done('created player')
+      }
+    })
+    const connectionData = { roomId: InputRoomId }
+    socket.emit('lobbyConnect', connectionData, (response) => {
+      if (!response.success) {
+        toast.error(response.message)
+        return
       }
     })
 
-    socket.close()
+    console.log(InputRoomId)
+    navigate(`/lobby/${InputRoomId}`)
   }
 
   return (
     <>
-      <form
-        onChange={onChange}
-        onSubmit={onSubmit}
-      >
+      <form>
         <div className={styles.flexContainer}>
           <div className='form-group'>
             <section className='flexItem'>
@@ -108,7 +106,7 @@ function Play({ socket }) {
             <section className='flexItem'>
               <button
                 className={'btn btn-block btn-purple'}
-                onClick={onSubmit}
+                onClick={onCreateLobby}
               >
                 Create new lobby
               </button>
@@ -120,13 +118,14 @@ function Play({ socket }) {
 
               <label>
                 <input
-                  name='InputLobbyId'
+                  name='InputRoomId'
                   placeholder='xxxx-xxxx-xxxx'
                   className='formControl input-center'
+                  onChange={(e) => setInputRoomId(e.target.value)}
                 />
               </label>
               <button
-                onClick={disconnectLobby}
+                onClick={onJoinLobby}
                 className={'btn btn-block btn-purple'}
               >
                 Join existing lobby
