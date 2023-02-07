@@ -1,0 +1,51 @@
+.container {
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+}
+.controlContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+
+  height: 100%;
+}
+
+.controlContainer > * {
+  flex-grow: 1;
+  min-width: 90px;
+
+}
+
+.chatInput{
+  resize: none;
+  padding: 5px;
+}
+.sendButton {
+  min-width: 90px;
+}
+
+
+
+@media (max-width: 600px) {
+    .controlContainer {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+      
+        height: 100%;
+      }
+      
+      .controlContainer > * {
+        flex-grow: 1;
+        min-width: 90px;
+      
+      }
+      .chatInput{
+        resize: none;
+        padding: 5px;
+      }
+      .sendButton {
+        min-width: 90px;
+      }
+  }
