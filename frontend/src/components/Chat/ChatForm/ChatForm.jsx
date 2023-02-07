@@ -16,13 +16,22 @@ function ChatForm({ socket, roomId }) {
       setInputMessage('')
     })
 
-    event.preventDefault()
-  } 
+    if (event) {
+      event.preventDefault()
+    }
+  }
 
   return (
     <>
       <div className={styles.container}>
-        <form onSubmit={handleFormSubmission}>
+        <form
+          onSubmit={handleFormSubmission}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && e.shiftKey === false) {
+              handleFormSubmission()
+            }
+          }}
+        >
           <div className={styles.controlContainer}>
             <textarea
               className={styles.chatInput}
