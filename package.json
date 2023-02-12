@@ -27,6 +27,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.7.2",
     "socket.io": "^4.5.4",
+    "toad-scheduler": "^2.2.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
